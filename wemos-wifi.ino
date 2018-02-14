@@ -93,7 +93,6 @@ void respondBlue() {
 }
 
 void respondOff() {
-  
   server.send(200, "text/plain", "shutting off...");
   switchMode("off");
 }
@@ -156,13 +155,17 @@ void off() {
 
 void blue() {
   msSinceCurrentMode = millis() - msCurrentModeStartedAt;
-  
-  if (msSinceCurrentMode >= 300000) {
-    brightness = 100;
+
+  if (msSinceCurrentMode >= 600000) {
+    switchMode("off");
+    return;
+  } else if (msSinceCurrentMode >= 300000) {
+    uint32_t modulus = msSinceCurrentMode % 10000;
+    brightness = (uint8_t) (modulus / 10) ;
   } else {
     brightness = (uint8_t) (msSinceCurrentMode / 3000);
   }
-  
+
   strip.setBrightness(brightness);
   for(int i=0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, strip.Color(30,30,255));
